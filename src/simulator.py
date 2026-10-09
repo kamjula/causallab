@@ -34,4 +34,6 @@ if __name__ == "__main__":
     for i in range(3):
         pre, post, group = run_experiment()
         diff, se = estimate(pre, post, group)
+        lo, hi = diff - 1.96 * se, diff + 1.96 * se  # 95% confidence interval
         print(f"run {i + 1}: measured lift = {diff:.2f}  (se = {se:.2f}, true lift = 5.0)")
+        print(f"         95% CI: [{lo:.2f}, {hi:.2f}]")
