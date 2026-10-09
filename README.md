@@ -13,7 +13,7 @@ An experimentation & causal inference workbench. I'm building this to get hands-
 ## Progress
 
 - [x] Week 1: repo setup
-- [ ] Week 1: data generator + experiment simulator
+- [x] Week 1: data generator + experiment simulator (`src/simulator.py`)
 - [ ] Week 2: CUPED + sequential testing
 - [ ] Week 3: causal ML + dashboard
 - [ ] Week 4: live demo + polish
@@ -22,4 +22,13 @@ An experimentation & causal inference workbench. I'm building this to get hands-
 
 ```bash
 pip install -r requirements.txt
+python src/simulator.py
+```
+
+The simulator makes 2000 fake users, splits them into control/treatment,
+adds a true lift of 5.0 to the treatment group, and prints the measured
+lift with its standard error. Example output:
+
+```
+run 1: measured lift = 6.95  (se = 1.19, true lift = 5.0)
 ```
