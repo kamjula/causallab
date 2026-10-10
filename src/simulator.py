@@ -1,5 +1,7 @@
 """A/B test simulator. Makes fake users, splits them in two groups, measures the lift."""
 
+from math import erf
+
 import numpy as np
 
 rng = np.random.default_rng(7)
@@ -27,13 +29,19 @@ def estimate(pre, post, group):
     # standard error of the difference, so we see how noisy the number is
     se = np.sqrt(post[group == 0].var() / (group == 0).sum() +
                  post[group == 1].var() / (group == 1).sum())
-    return diff, se
+    # two-sided p-value from a t-test; normal approximation is fine for
+    # thousands of users
+    z = abs(diff / se)
+    p = 1 - erf(z / np.sqrt(2))
+    return diff, se, p
 
 
 if __name__ == "__main__":
     for i in range(3):
         pre, post, group = run_experiment()
-        diff, se = estimate(pre, post, group)
+        diff, se, p = estimate(pre, post, group)
         lo, hi = diff - 1.96 * se, diff + 1.96 * se  # 95% confidence interval
+        verdict = "significant" if p < 0.05 else "not significant"
         print(f"run {i + 1}: measured lift = {diff:.2f}  (se = {se:.2f}, true lift = 5.0)")
         print(f"         95% CI: [{lo:.2f}, {hi:.2f}]")
+        print(f"         p-value = {p:.4f} -> {verdict} at 5%")
