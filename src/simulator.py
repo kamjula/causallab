@@ -1,5 +1,6 @@
 """A/B test simulator. Makes fake users, splits them in two groups, measures the lift."""
 
+import math
 from math import erf
 
 import numpy as np
@@ -36,6 +37,13 @@ def estimate(pre, post, group):
     return diff, se, p
 
 
+def sample_size(lift, sigma):
+    # how many users per group to spot this lift: standard two-sample
+    # formula, 80% power at 5% level (z = 1.96 for alpha, 0.84 for beta)
+    n = 2 * sigma ** 2 * (1.96 + 0.84) ** 2 / lift ** 2
+    return math.ceil(n)
+
+
 if __name__ == "__main__":
     for i in range(3):
         pre, post, group = run_experiment()
@@ -45,3 +53,12 @@ if __name__ == "__main__":
         print(f"run {i + 1}: measured lift = {diff:.2f}  (se = {se:.2f}, true lift = 5.0)")
         print(f"         95% CI: [{lo:.2f}, {hi:.2f}]")
         print(f"         p-value = {p:.4f} -> {verdict} at 5%")
+
+    # power check: run a small pilot, measure the noise, see how many users
+    # each group needs to detect a few different lifts
+    print()
+    _, pilot, _ = run_experiment(n=1000, lift=0.0)
+    sigma = pilot.std()
+    for want in (2.0, 5.0, 10.0):
+        need = sample_size(want, sigma)
+        print(f"to detect lift {want}: {need} users per group")
