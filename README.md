@@ -10,13 +10,18 @@ An experimentation & causal inference workbench. I'm building this to get hands-
 - Heterogeneous treatment effects - who benefits most
 - Streamlit dashboard with a live demo
 
+## Implementation Status
+
+The repository includes an A/B test simulator and a CUPED adjustment utility. CUPED variance-reduction performance and statistical correctness should be validated with repeatable tests before publishing numerical improvement claims.
+
 ## Progress
 
 - [x] Week 1: repo setup
 - [x] Week 1: data generator + experiment simulator (`src/simulator.py`)
-- [ ] Week 2: CUPED + sequential testing
-- [ ] Week 3: causal ML + dashboard
-- [ ] Week 4: live demo + polish
+- [x] CUPED adjustment utility implemented (`src/cuped.py`)
+- [ ] Sequential testing (planned)
+- [ ] Causal ML + dashboard (planned)
+- [ ] Hosted demo + polish (planned)
 
 ## Run
 
