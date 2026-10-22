@@ -1,8 +1,8 @@
-# CausalLab
+# CausalLab — Experimentation & Causal Inference Workbench
 
 An experimentation & causal inference workbench. I'm building this to get hands-on with what data science interviews at top companies actually test: designing experiments, reducing variance, and measuring real impact.
 
-## Plan
+## Planned Capabilities
 
 - A/B test simulator on realistic data
 - CUPED variance reduction (smaller samples, same confidence)
@@ -10,11 +10,11 @@ An experimentation & causal inference workbench. I'm building this to get hands-
 - Heterogeneous treatment effects - who benefits most
 - Streamlit dashboard with a live demo
 
-## Implementation Status
+## Current Implementation
 
 The repository includes an A/B test simulator and a CUPED adjustment utility. CUPED variance-reduction performance and statistical correctness should be validated with repeatable tests before publishing numerical improvement claims.
 
-## Progress
+## Development Progress
 
 - [x] Week 1: repo setup
 - [x] Week 1: data generator + experiment simulator (`src/simulator.py`)
