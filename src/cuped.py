@@ -9,8 +9,9 @@ import numpy as np
 
 def cuped_theta(pre, post):
     # how strongly the pre-period predicts the post-period:
-    # the slope of post on pre
-    return np.cov(pre, post)[0, 1] / np.var(pre)
+    # the slope of post on pre. cov and var must use the same ddof,
+    # otherwise the slope is off by n / (n - 1) on small samples.
+    return np.cov(pre, post)[0, 1] / np.var(pre, ddof=1)
 
 
 def adjust(pre, post):
