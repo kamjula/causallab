@@ -1,5 +1,7 @@
 # CausalLab — Experimentation & Causal Inference Workbench
 
+![CausalLab overview](docs/overview-poster.svg)
+
 An experimentation & causal inference workbench. I'm building this to get hands-on with what data science interviews at top companies actually test: designing experiments, reducing variance, and measuring real impact.
 
 ## Planned Capabilities
