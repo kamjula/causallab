@@ -38,6 +38,13 @@ def estimate(pre, post, group):
 
 
 def sample_size(lift, sigma):
+    # a lift of zero (or less) makes no sense here: you can't size an
+    # experiment to detect nothing, and a negative lift would quietly
+    # give the same answer as a positive one. fail loudly instead.
+    if lift <= 0:
+        raise ValueError("lift must be positive")
+    if sigma <= 0:
+        raise ValueError("sigma must be positive")
     # how many users per group to spot this lift: standard two-sample
     # formula, 80% power at 5% level (z = 1.96 for alpha, 0.84 for beta)
     n = 2 * sigma ** 2 * (1.96 + 0.84) ** 2 / lift ** 2
