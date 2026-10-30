@@ -11,7 +11,13 @@ def cuped_theta(pre, post):
     # how strongly the pre-period predicts the post-period:
     # the slope of post on pre. cov and var must use the same ddof,
     # otherwise the slope is off by n / (n - 1) on small samples.
-    return np.cov(pre, post)[0, 1] / np.var(pre, ddof=1)
+    var = np.var(pre, ddof=1)
+    # a flat pre-period (every user spent the same before) has no
+    # signal to adjust with: dividing by zero would quietly give
+    # inf/nan, so fail loudly instead.
+    if var == 0:
+        raise ValueError("pre-period has no variance, cuped cannot adjust")
+    return np.cov(pre, post)[0, 1] / var
 
 
 def adjust(pre, post):
