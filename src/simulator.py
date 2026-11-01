@@ -9,6 +9,11 @@ rng = np.random.default_rng(7)
 
 
 def make_users(n=2000):
+    # zero or negative users makes no sense: it would silently hand
+    # back empty arrays, and estimate() on those returns nan.
+    # fail loudly instead.
+    if n <= 0:
+        raise ValueError("n must be positive")
     # each user has a natural spend level (their "type"), from the pre period
     natural = rng.normal(100, 25, size=n)
     # random split: 0 = control (old page), 1 = treatment (new page)
