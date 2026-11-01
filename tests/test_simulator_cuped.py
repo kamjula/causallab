@@ -4,7 +4,7 @@
 import numpy as np
 
 from src.cuped import adjust, cuped_theta
-from src.simulator import estimate, run_experiment, sample_size
+from src.simulator import estimate, make_users, run_experiment, sample_size
 
 
 def test_estimate_diff_is_treatment_minus_control():
@@ -49,6 +49,18 @@ def test_sample_size_rejects_zero_or_negative_lift():
 def test_sample_size_smaller_lift_needs_more_users():
     assert sample_size(2.0, 25.0) > sample_size(5.0, 25.0)
     assert sample_size(5.0, 25.0) > sample_size(10.0, 25.0)
+
+
+def test_make_users_rejects_zero_or_negative_n():
+    # zero used to hand back empty arrays, and estimate() on those
+    # quietly returned nan; both should fail with a clear error
+    for n in (0, -10):
+        try:
+            make_users(n)
+        except ValueError:
+            pass
+        else:
+            raise AssertionError(f"make_users({n}) should fail")
 
 
 def test_run_experiment_recovers_true_lift():
