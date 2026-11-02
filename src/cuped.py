@@ -8,6 +8,10 @@ import numpy as np
 
 
 def cuped_theta(pre, post):
+    # a slope needs at least two users: with one user (or none) the
+    # variance math quietly gives nan, so fail loudly instead.
+    if len(pre) < 2:
+        raise ValueError("cuped needs at least two users to fit a slope")
     # how strongly the pre-period predicts the post-period:
     # the slope of post on pre. cov and var must use the same ddof,
     # otherwise the slope is off by n / (n - 1) on small samples.
