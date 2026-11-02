@@ -81,6 +81,19 @@ def test_cuped_theta_on_perfect_line():
     assert abs(cuped_theta(pre, post) - 2.0) < 1e-9
 
 
+def test_cuped_theta_rejects_fewer_than_two_users():
+    # one user (or none) used to return nan with only a warning;
+    # a slope cannot be fit from a single point, so fail clearly
+    for pre, post in [(np.array([100.0]), np.array([110.0])),
+                       (np.array([]), np.array([]))]:
+        try:
+            cuped_theta(pre, post)
+        except ValueError:
+            pass
+        else:
+            raise AssertionError("cuped_theta on <2 users should fail")
+
+
 def test_cuped_adjust_removes_predictable_part():
     # post = 2 * pre + 10: after adjusting, nothing varies any more
     pre = np.array([0.0, 1.0, 2.0, 3.0])
