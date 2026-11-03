@@ -35,6 +35,11 @@ def estimate(pre, post, group):
     # standard error of the difference, so we see how noisy the number is
     se = np.sqrt(post[group == 0].var() / (group == 0).sum() +
                  post[group == 1].var() / (group == 1).sum())
+    # no variation in post at all means the t-test has nothing to
+    # work with: differing constant groups would quietly claim p = 0,
+    # identical ones would quietly return nan. fail loudly instead.
+    if se == 0:
+        raise ValueError("post has no variation, t-test cannot run")
     # two-sided p-value from a t-test; normal approximation is fine for
     # thousands of users
     z = abs(diff / se)

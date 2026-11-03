@@ -110,3 +110,18 @@ def test_cuped_shrinks_variance_on_correlated_data():
     adj = adjust(pre, post)
     assert adj.var() < post.var()
     assert adj.var() < 0.5 * post.var()
+
+
+def test_estimate_rejects_zero_variation_post():
+    # every post value the same: differing constant groups used to
+    # claim p = 0 with se = 0, identical ones returned nan silently;
+    # a t-test needs variation, so both should fail with a clear error
+    group = np.array([0, 0, 0, 1, 1, 1])
+    for post in [np.array([100.0, 100.0, 100.0, 105.0, 105.0, 105.0]),
+                 np.full(6, 100.0)]:
+        try:
+            estimate(np.zeros(6), post, group)
+        except ValueError:
+            pass
+        else:
+            raise AssertionError("estimate on constant post should fail")
