@@ -29,6 +29,10 @@ def run_experiment(n=2000, lift=5.0):
 
 
 def estimate(pre, post, group):
+    # mismatched lengths used to fail deep inside numpy with a
+    # confusing boolean-index error. fail with a clear message instead.
+    if len(post) != len(group):
+        raise ValueError("post and group must have the same length")
     ctrl = post[group == 0].mean()
     treat = post[group == 1].mean()
     diff = treat - ctrl
