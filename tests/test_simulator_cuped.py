@@ -112,6 +112,18 @@ def test_cuped_shrinks_variance_on_correlated_data():
     assert adj.var() < 0.5 * post.var()
 
 
+def test_estimate_rejects_mismatched_lengths():
+    # post shorter than group used to fail inside numpy with a
+    # confusing boolean-index error; it should fail with a clear error
+    try:
+        estimate(np.zeros(6), np.array([100.0, 101.0, 102.0]),
+                 np.array([0, 0, 0, 1, 1, 1]))
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("estimate on mismatched lengths should fail")
+
+
 def test_estimate_rejects_zero_variation_post():
     # every post value the same: differing constant groups used to
     # claim p = 0 with se = 0, identical ones returned nan silently;
