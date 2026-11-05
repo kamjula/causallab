@@ -137,3 +137,16 @@ def test_estimate_rejects_zero_variation_post():
             pass
         else:
             raise AssertionError("estimate on constant post should fail")
+
+
+def test_estimate_rejects_other_group_values():
+    # a third group value used to be silently dropped from both means
+    # (those users just vanished from the lift); it should fail clearly
+    post = np.array([90.0, 100.0, 110.0, 95.0, 105.0, 115.0])
+    group = np.array([0, 0, 2, 1, 1, 1])
+    try:
+        estimate(np.zeros(6), post, group)
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("estimate with group value 2 should fail")
