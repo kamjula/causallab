@@ -33,6 +33,10 @@ def estimate(pre, post, group):
     # confusing boolean-index error. fail with a clear message instead.
     if len(post) != len(group):
         raise ValueError("post and group must have the same length")
+    # a group value other than 0 or 1 would be silently dropped from
+    # both means (a third group is just ignored), so fail loudly.
+    if not set(np.unique(group)) <= {0, 1}:
+        raise ValueError("group must only contain 0 and 1")
     ctrl = post[group == 0].mean()
     treat = post[group == 1].mean()
     diff = treat - ctrl
