@@ -37,6 +37,10 @@ def estimate(pre, post, group):
     # both means (a third group is just ignored), so fail loudly.
     if not set(np.unique(group)) <= {0, 1}:
         raise ValueError("group must only contain 0 and 1")
+    # an empty group used to divide by zero and quietly return nan:
+    # fail clearly instead, so a bad split is caught at once
+    if (group == 0).sum() == 0 or (group == 1).sum() == 0:
+        raise ValueError("both groups need at least one user")
     ctrl = post[group == 0].mean()
     treat = post[group == 1].mean()
     diff = treat - ctrl

@@ -73,6 +73,17 @@ def test_run_experiment_recovers_true_lift():
     # split should be roughly even
     assert 1800 < (group == 1).sum() < 2200
 
+def test_estimate_rejects_empty_group():
+    # all users in one group used to give nan instead of an error
+    post = np.array([90.0, 100.0, 110.0])
+    group = np.array([1, 1, 1])
+    try:
+        estimate(np.zeros(3), post, group)
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("estimate with an empty control group should fail")
+
 
 def test_cuped_theta_on_perfect_line():
     # post is exactly twice pre -> slope is 2
