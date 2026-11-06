@@ -81,6 +81,18 @@ def test_cuped_theta_on_perfect_line():
     assert abs(cuped_theta(pre, post) - 2.0) < 1e-9
 
 
+def test_cuped_theta_rejects_mismatched_lengths():
+    # pre longer than post used to fail inside numpy with a
+    # confusing concatenation error; it should fail with a clear error
+    try:
+        cuped_theta(np.array([100.0, 101.0, 102.0, 103.0]),
+                    np.array([110.0, 111.0]))
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("cuped_theta on mismatched lengths should fail")
+
+
 def test_cuped_theta_rejects_fewer_than_two_users():
     # one user (or none) used to return nan with only a warning;
     # a slope cannot be fit from a single point, so fail clearly
