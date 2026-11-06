@@ -8,6 +8,10 @@ import numpy as np
 
 
 def cuped_theta(pre, post):
+    # mismatched lengths used to fail deep inside numpy with a
+    # confusing concatenation error. fail with a clear message instead.
+    if len(pre) != len(post):
+        raise ValueError("pre and post must have the same length")
     # a slope needs at least two users: with one user (or none) the
     # variance math quietly gives nan, so fail loudly instead.
     if len(pre) < 2:
