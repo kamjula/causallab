@@ -29,6 +29,10 @@ def run_experiment(n=2000, lift=5.0):
 
 
 def estimate(pre, post, group):
+    # pre is not used in the maths below, so a wrong-length pre
+    # would slip through silently. fail with a clear message instead.
+    if len(pre) != len(post):
+        raise ValueError("pre and post must have the same length")
     # mismatched lengths used to fail deep inside numpy with a
     # confusing boolean-index error. fail with a clear message instead.
     if len(post) != len(group):
