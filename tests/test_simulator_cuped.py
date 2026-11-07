@@ -173,3 +173,16 @@ def test_estimate_rejects_other_group_values():
         pass
     else:
         raise AssertionError("estimate with group value 2 should fail")
+
+
+def test_estimate_rejects_mismatched_pre_length():
+    # pre is not used in the maths, so a wrong-length pre used to
+    # slip through silently (the lift came back as if nothing was
+    # wrong); a caller passing mismatched arrays should fail clearly
+    try:
+        estimate(np.zeros(5), np.array([90.0, 100.0, 110.0, 95.0, 105.0, 115.0]),
+                 np.array([0, 0, 0, 1, 1, 1]))
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("estimate with mismatched pre should fail")
