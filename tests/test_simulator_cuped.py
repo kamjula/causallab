@@ -186,3 +186,17 @@ def test_estimate_rejects_mismatched_pre_length():
         pass
     else:
         raise AssertionError("estimate with mismatched pre should fail")
+
+
+def test_estimate_rejects_nan_or_inf_post():
+    # a nan or inf in post used to poison the means and quietly return
+    # nan for the lift, se and p-value; it should fail with a clear error
+    group = np.array([0, 0, 0, 1, 1, 1])
+    for post in [np.array([90.0, 100.0, np.nan, 95.0, 105.0, 115.0]),
+                 np.array([90.0, 100.0, np.inf, 95.0, 105.0, 115.0])]:
+        try:
+            estimate(np.zeros(6), post, group)
+        except ValueError:
+            pass
+        else:
+            raise AssertionError("estimate with nan/inf post should fail")
