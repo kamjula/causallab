@@ -45,6 +45,10 @@ def estimate(pre, post, group):
     # fail clearly instead, so a bad split is caught at once
     if (group == 0).sum() == 0 or (group == 1).sum() == 0:
         raise ValueError("both groups need at least one user")
+    # a nan or inf in post would quietly poison the means and return
+    # nan for the lift, se and p-value. fail loudly instead.
+    if not np.isfinite(post).all():
+        raise ValueError("post must not contain nan or inf")
     ctrl = post[group == 0].mean()
     treat = post[group == 1].mean()
     diff = treat - ctrl
