@@ -16,6 +16,10 @@ def cuped_theta(pre, post):
     # variance math quietly gives nan, so fail loudly instead.
     if len(pre) < 2:
         raise ValueError("cuped needs at least two users to fit a slope")
+    # a nan or inf in pre or post would quietly poison the covariance
+    # and return nan for the slope. fail loudly instead.
+    if not np.isfinite(pre).all() or not np.isfinite(post).all():
+        raise ValueError("pre and post must not contain nan or inf")
     # how strongly the pre-period predicts the post-period:
     # the slope of post on pre. cov and var must use the same ddof,
     # otherwise the slope is off by n / (n - 1) on small samples.
