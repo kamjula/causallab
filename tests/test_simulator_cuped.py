@@ -92,6 +92,19 @@ def test_cuped_theta_on_perfect_line():
     assert abs(cuped_theta(pre, post) - 2.0) < 1e-9
 
 
+def test_cuped_theta_rejects_flat_pre_period():
+    # every user spent the same before -> no slope to estimate,
+    # used to return inf/nan silently; should fail with a clear error
+    pre = np.full(4, 100.0)
+    post = np.array([90.0, 100.0, 110.0, 105.0])
+    try:
+        cuped_theta(pre, post)
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("cuped_theta on flat pre should fail")
+
+
 def test_cuped_theta_rejects_mismatched_lengths():
     # pre longer than post used to fail inside numpy with a
     # confusing concatenation error; it should fail with a clear error
