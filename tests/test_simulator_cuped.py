@@ -117,6 +117,21 @@ def test_cuped_theta_rejects_fewer_than_two_users():
             raise AssertionError("cuped_theta on <2 users should fail")
 
 
+def test_cuped_theta_rejects_nan_or_inf():
+    # a nan or inf in pre or post used to poison the covariance and
+    # quietly return nan for the slope; it should fail with a clear error
+    for pre, post in [(np.array([100.0, np.nan, 102.0, 103.0]),
+                       np.array([110.0, 111.0, 112.0, 113.0])),
+                      (np.array([100.0, 101.0, 102.0, 103.0]),
+                       np.array([110.0, 111.0, np.inf, 113.0]))]:
+        try:
+            cuped_theta(pre, post)
+        except ValueError:
+            pass
+        else:
+            raise AssertionError("cuped_theta with nan/inf should fail")
+
+
 def test_cuped_adjust_removes_predictable_part():
     # post = 2 * pre + 10: after adjusting, nothing varies any more
     pre = np.array([0.0, 1.0, 2.0, 3.0])
