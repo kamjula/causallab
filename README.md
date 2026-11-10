@@ -1,39 +1,76 @@
 # CausalLab — Experimentation & Causal Inference Workbench
 
-An experimentation & causal inference workbench. I'm building this to get hands-on with what ML and experimentation interviews at top companies actually test: designing experiments, reducing variance, and measuring real impact.
+> **Status: active development**
 
-## Planned Capabilities
+CausalLab is a Python workbench for learning and validating practical experimentation methods: randomized A/B simulation, treatment-effect estimation, sample-size planning, and CUPED variance reduction.
 
-- A/B test simulator on realistic data
-- CUPED variance reduction (smaller samples, same confidence)
-- Sequential testing (stop early when there's signal)
-- Heterogeneous treatment effects - who benefits most
-- Streamlit dashboard with a live demo
+The repository separates **implemented and tested components** from planned work so unfinished features are not presented as complete.
 
-## Current Implementation
+## Implemented
 
-The repository includes an A/B test simulator and a CUPED adjustment utility. CUPED variance-reduction performance and statistical correctness should be validated with repeatable tests before publishing numerical improvement claims.
+### A/B experiment simulator
 
-## Development Progress
+- Generates synthetic users with pre-period behavior
+- Randomizes users into control/treatment
+- Injects a known treatment lift
+- Estimates treatment minus control
+- Reports standard error, approximate p-value, and confidence interval
+- Calculates required sample size for a target lift
 
-- [x] Week 1: repo setup
-- [x] Week 1: data generator + experiment simulator (`src/simulator.py`)
-- [x] CUPED adjustment utility implemented (`src/cuped.py`)
-- [ ] Sequential testing (planned)
-- [ ] Causal ML + dashboard (planned)
-- [ ] Hosted demo + polish (planned)
+### CUPED variance reduction
 
-## Run
+- Estimates the pre/post covariance adjustment coefficient
+- Removes predictable pre-period variation from the post metric
+- Validates mismatched lengths, non-finite values, zero variance, and too-small samples
+
+### Tests
+
+The pytest suite checks:
+
+- known treatment differences
+- no-lift behavior
+- sample-size calculations
+- invalid and non-finite inputs
+- roughly balanced randomization
+- recovery of injected treatment lift
+- CUPED slope correctness
+- CUPED variance reduction on correlated synthetic data
+- edge cases that previously could return misleading NaN/Inf results
+
+## Run locally
 
 ```bash
+git clone https://github.com/kamjula/causallab.git
+cd causallab
+
+python -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
+
 python src/simulator.py
+python -m pytest tests/ -q
 ```
 
-The simulator makes 2000 fake users, splits them into control/treatment,
-adds a true lift of 5.0 to the treatment group, and prints the measured
-lift with its standard error. Example output:
+## Current scope
 
-```
-run 1: measured lift = 6.95  (se = 1.19, true lift = 5.0)
-```
+The current code is a **statistical experimentation foundation**, not a complete causal-ML platform.
+
+Planned work:
+
+- [ ] Sequential testing
+- [ ] Heterogeneous treatment-effect modeling
+- [ ] Streamlit dashboard / visual experiment report
+- [ ] Reproducible benchmark examples and documentation
+
+## Why this project matters
+
+The goal is not to hide experimentation behind a dashboard. The code keeps the statistical assumptions and failure cases visible so results can be inspected and challenged.
+
+## Stack
+
+Python · NumPy · pytest
+
+## Author
+
+**Sravani Kamjula** · AI/ML Engineer  
+[LinkedIn](https://www.linkedin.com/in/sravani-kamjula/) · [Portfolio](https://sravaniportfoli.netlify.app/)
