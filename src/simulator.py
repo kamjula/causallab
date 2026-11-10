@@ -75,6 +75,10 @@ def sample_size(lift, sigma):
         raise ValueError("lift must be positive")
     if sigma <= 0:
         raise ValueError("sigma must be positive")
+    # inf or nan would give a nonsense answer (an inf lift says 0 users)
+    # or a confusing error from math.ceil. fail clearly instead.
+    if not math.isfinite(lift) or not math.isfinite(sigma):
+        raise ValueError("lift and sigma must be finite")
     # how many users per group to spot this lift: standard two-sample
     # formula, 80% power at 5% level (z = 1.96 for alpha, 0.84 for beta)
     n = 2 * sigma ** 2 * (1.96 + 0.84) ** 2 / lift ** 2
