@@ -77,6 +77,19 @@ def test_make_users_rejects_zero_or_negative_n():
             raise AssertionError(f"make_users({n}) should fail")
 
 
+def test_run_experiment_rejects_non_finite_lift():
+    # a nan or inf lift used to poison post silently (nan or inf in the
+    # treatment group), and the failure only showed up later inside
+    # estimate() blaming post; it should fail clearly at the source
+    for lift in (float("nan"), float("inf"), float("-inf")):
+        try:
+            run_experiment(n=100, lift=lift)
+        except ValueError:
+            pass
+        else:
+            raise AssertionError(f"run_experiment(lift={lift}) should fail")
+
+
 def test_run_experiment_recovers_true_lift():
     # 4000 users, true lift 5: measured lift should be close, not exact
     _, post, group = run_experiment(n=4000, lift=5.0)
