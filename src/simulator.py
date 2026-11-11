@@ -22,6 +22,11 @@ def make_users(n=2000):
 
 
 def run_experiment(n=2000, lift=5.0):
+    # a nan or inf lift would quietly poison post (nan or inf in the
+    # treatment group), and the failure would only show up later inside
+    # estimate() blaming post. fail clearly at the source instead.
+    if not math.isfinite(lift):
+        raise ValueError("lift must be finite")
     pre, group = make_users(n)
     post = pre + rng.normal(0, 10, size=n)  # day to day noise
     post[group == 1] += lift               # the change adds this much
