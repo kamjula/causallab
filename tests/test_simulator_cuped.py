@@ -77,6 +77,18 @@ def test_make_users_rejects_zero_or_negative_n():
             raise AssertionError(f"make_users({n}) should fail")
 
 
+def test_make_users_rejects_non_integer_n():
+    # a fractional or text n used to fail deep inside numpy with a
+    # confusing TypeError; it should fail with a clear error instead
+    for n in (100.5, "2000", None):
+        try:
+            make_users(n)
+        except ValueError:
+            pass
+        else:
+            raise AssertionError(f"make_users({n!r}) should fail")
+
+
 def test_run_experiment_rejects_non_finite_lift():
     # a nan or inf lift used to poison post silently (nan or inf in the
     # treatment group), and the failure only showed up later inside

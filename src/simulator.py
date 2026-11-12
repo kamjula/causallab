@@ -9,6 +9,10 @@ rng = np.random.default_rng(7)
 
 
 def make_users(n=2000):
+    # a fractional or text n used to fail deep inside numpy with a
+    # confusing TypeError. fail with a clear message instead.
+    if not isinstance(n, (int, np.integer)):
+        raise ValueError("n must be a whole number")
     # zero or negative users makes no sense: it would silently hand
     # back empty arrays, and estimate() on those returns nan.
     # fail loudly instead.
