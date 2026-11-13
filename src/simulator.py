@@ -26,6 +26,10 @@ def make_users(n=2000):
 
 
 def run_experiment(n=2000, lift=5.0):
+    # a text or missing lift used to fail inside math.isfinite with a
+    # confusing TypeError. fail with a clear message instead.
+    if not isinstance(lift, (int, float, np.integer, np.floating)):
+        raise ValueError("lift must be a number")
     # a nan or inf lift would quietly poison post (nan or inf in the
     # treatment group), and the failure would only show up later inside
     # estimate() blaming post. fail clearly at the source instead.
