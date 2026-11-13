@@ -102,6 +102,18 @@ def test_run_experiment_rejects_non_finite_lift():
             raise AssertionError(f"run_experiment(lift={lift}) should fail")
 
 
+def test_run_experiment_rejects_non_numeric_lift():
+    # a text or missing lift used to fail inside math.isfinite with a
+    # confusing TypeError; it should fail with a clear error instead
+    for lift in ("5", None):
+        try:
+            run_experiment(n=100, lift=lift)
+        except ValueError:
+            pass
+        else:
+            raise AssertionError(f"run_experiment(lift={lift!r}) should fail")
+
+
 def test_run_experiment_recovers_true_lift():
     # 4000 users, true lift 5: measured lift should be close, not exact
     _, post, group = run_experiment(n=4000, lift=5.0)
