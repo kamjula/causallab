@@ -81,6 +81,12 @@ def estimate(pre, post, group):
 
 
 def sample_size(lift, sigma):
+    # a text or missing lift or sigma used to fail inside the <= check
+    # with a confusing TypeError. fail with a clear message instead.
+    if not isinstance(lift, (int, float, np.integer, np.floating)):
+        raise ValueError("lift must be a number")
+    if not isinstance(sigma, (int, float, np.integer, np.floating)):
+        raise ValueError("sigma must be a number")
     # a lift of zero (or less) makes no sense here: you can't size an
     # experiment to detect nothing, and a negative lift would quietly
     # give the same answer as a positive one. fail loudly instead.
