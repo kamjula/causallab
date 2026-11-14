@@ -60,6 +60,19 @@ def test_sample_size_rejects_non_finite_inputs():
             raise AssertionError(f"sample_size({lift}, {sigma}) should fail")
 
 
+def test_sample_size_rejects_non_numeric_inputs():
+    # a text or missing lift or sigma used to fail inside the <= check
+    # with a confusing TypeError; it should fail with a clear error
+    for lift, sigma in [("5", 25.0), (5.0, "x"), (None, 25.0),
+                        (5.0, None)]:
+        try:
+            sample_size(lift, sigma)
+        except ValueError:
+            pass
+        else:
+            raise AssertionError(f"sample_size({lift!r}, {sigma!r}) should fail")
+
+
 def test_sample_size_smaller_lift_needs_more_users():
     assert sample_size(2.0, 25.0) > sample_size(5.0, 25.0)
     assert sample_size(5.0, 25.0) > sample_size(10.0, 25.0)
