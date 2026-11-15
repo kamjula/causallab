@@ -279,3 +279,20 @@ def test_estimate_rejects_nan_or_inf_post():
             pass
         else:
             raise AssertionError("estimate with nan/inf post should fail")
+
+
+def test_cuped_theta_rejects_non_numeric_inputs():
+    # text or a missing value in pre or post used to fail inside
+    # numpy's isfinite check with a confusing TypeError; it should
+    # fail with a clear error instead
+    for pre, post in [(np.array(["100", "101", "102", "103"]),
+                       np.array([110.0, 111.0, 112.0, 113.0])),
+                      (np.array([100.0, 101.0, 102.0, 103.0]),
+                       np.array(["a", "b", "c", "d"])),
+                      (None, np.array([110.0, 111.0, 112.0, 113.0]))]:
+        try:
+            cuped_theta(pre, post)
+        except ValueError:
+            pass
+        else:
+            raise AssertionError("cuped_theta with non-numeric input should fail")
