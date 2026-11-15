@@ -47,7 +47,8 @@ python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 
-python src/simulator.py
+python src/simulator.py          # A/B simulation, CIs, sample-size planning
+python examples/cuped_demo.py    # plain vs CUPED estimate on the same data
 python -m pytest tests/ -q
 ```
 
