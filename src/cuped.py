@@ -8,6 +8,15 @@ import numpy as np
 
 
 def cuped_theta(pre, post):
+    # text or a missing value in pre or post used to fail inside
+    # numpy's isfinite check with a confusing TypeError. fail with
+    # a clear message instead.
+    pre = np.asarray(pre)
+    post = np.asarray(post)
+    if pre.dtype.kind not in "iuf" or post.dtype.kind not in "iuf":
+        raise ValueError("pre and post must be numbers")
+    pre = pre.astype(float)
+    post = post.astype(float)
     # mismatched lengths used to fail deep inside numpy with a
     # confusing concatenation error. fail with a clear message instead.
     if len(pre) != len(post):
