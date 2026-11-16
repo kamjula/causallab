@@ -1,4 +1,4 @@
-# CausalLab — Experimentation & Causal Inference Workbench
+# CausalLab: Experimentation & Causal Inference Workbench
 
 [![CI](https://github.com/kamjula/causallab/actions/workflows/ci.yml/badge.svg)](https://github.com/kamjula/causallab/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
@@ -94,9 +94,9 @@ python -m pytest tests/ -q
 - The T-learner uses linear models on a single pre-period covariate
 - Segments are based on one variable (pre-period spend)
 
-## Why this project matters
+## Design approach
 
-The goal is not to hide experimentation behind a dashboard. The code keeps the statistical assumptions and failure cases visible so results can be inspected and challenged.
+Statistical assumptions and failure cases are kept visible in the code, so every result can be inspected and challenged.
 
 ## Stack
 
