@@ -296,3 +296,18 @@ def test_cuped_theta_rejects_non_numeric_inputs():
             pass
         else:
             raise AssertionError("cuped_theta with non-numeric input should fail")
+
+
+def test_estimate_rejects_non_numeric_post():
+    # a text or missing post used to fail inside numpy's isfinite
+    # check (or inside len) with a confusing TypeError; it should
+    # fail with a clear error instead
+    group = np.array([0, 0, 0, 1, 1, 1])
+    for post in [np.array(["90", "100", "110", "95", "105", "115"]),
+                 None]:
+        try:
+            estimate(np.zeros(6), post, group)
+        except ValueError:
+            pass
+        else:
+            raise AssertionError("estimate with non-numeric post should fail")
