@@ -1,5 +1,7 @@
 # CausalLab — Experimentation & Causal Inference Workbench
 
+[![CI](https://github.com/kamjula/causallab/actions/workflows/ci.yml/badge.svg)](https://github.com/kamjula/causallab/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-green)](LICENSE)
+
 > **Status: active development**
 
 CausalLab is a Python workbench for learning and validating practical experimentation methods: randomized A/B simulation, treatment-effect estimation, sample-size planning, and CUPED variance reduction.
