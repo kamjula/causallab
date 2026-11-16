@@ -42,6 +42,13 @@ def run_experiment(n=2000, lift=5.0):
 
 
 def estimate(pre, post, group):
+    # a text or missing post used to fail inside numpy's isfinite
+    # check (or inside len) with a confusing TypeError. fail with
+    # a clear message instead.
+    post = np.asarray(post)
+    if post.dtype.kind not in "iuf":
+        raise ValueError("post must be numbers")
+    post = post.astype(float)
     # pre is not used in the maths below, so a wrong-length pre
     # would slip through silently. fail with a clear message instead.
     if len(pre) != len(post):
