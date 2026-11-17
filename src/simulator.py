@@ -49,6 +49,13 @@ def estimate(pre, post, group):
     if post.dtype.kind not in "iuf":
         raise ValueError("post must be numbers")
     post = post.astype(float)
+    # pre is not used in the maths, so a text or missing pre used to
+    # slip through silently as long as the length matched. fail with
+    # a clear message instead.
+    pre = np.asarray(pre)
+    if pre.dtype.kind not in "iuf":
+        raise ValueError("pre must be numbers")
+    pre = pre.astype(float)
     # pre is not used in the maths below, so a wrong-length pre
     # would slip through silently. fail with a clear message instead.
     if len(pre) != len(post):

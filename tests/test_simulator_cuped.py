@@ -324,3 +324,19 @@ def test_estimate_rejects_non_numeric_post():
             pass
         else:
             raise AssertionError("estimate with non-numeric post should fail")
+
+
+def test_estimate_rejects_non_numeric_pre():
+    # pre is not used in the maths, so a text or missing pre used to
+    # slip through silently as long as the length matched; it should
+    # fail with a clear error instead
+    post = np.array([90.0, 100.0, 110.0, 95.0, 105.0, 115.0])
+    group = np.array([0, 0, 0, 1, 1, 1])
+    for pre in [np.array(["90", "100", "110", "95", "105", "115"]),
+                None]:
+        try:
+            estimate(pre, post, group)
+        except ValueError:
+            pass
+        else:
+            raise AssertionError("estimate with non-numeric pre should fail")
