@@ -12,6 +12,12 @@ from sklearn.linear_model import LinearRegression
 
 
 def fit_t_learner(pre, post, group):
+    # a T-learner fits one model per group, so both groups need users:
+    # an all-control or all-treated split used to fail deep inside
+    # sklearn with a confusing "0 sample(s)" error. fail clearly instead.
+    group = np.asarray(group)
+    if (group == 0).sum() == 0 or (group == 1).sum() == 0:
+        raise ValueError("need users in both groups to fit a T-learner")
     # one simple model per group, both using the pre-period covariate
     X = pre.reshape(-1, 1)
     control = LinearRegression().fit(X[group == 0], post[group == 0])
