@@ -12,6 +12,14 @@ from simulator import estimate
 
 
 def make_segments(pre, n_segments=2):
+    # n_segments is a count of slices: 0 or a negative count used to
+    # hand back nonsense labels (-1, -2) with no complaint, and a
+    # fractional, text or missing count failed inside numpy with a
+    # confusing TypeError. fail with a clear message instead.
+    if not isinstance(n_segments, (int, float)) or isinstance(n_segments, bool):
+        raise ValueError("n_segments must be a whole number")
+    if int(n_segments) != n_segments or n_segments < 2:
+        raise ValueError("n_segments must be a whole number of 2 or more")
     # split users by pre-period spend into equal-sized segments;
     # 0 = lowest spenders, n_segments - 1 = highest spenders
     edges = np.quantile(pre, np.linspace(0, 1, n_segments + 1))
