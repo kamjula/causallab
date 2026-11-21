@@ -36,5 +36,22 @@ def budget_bar(alpha=0.05, peeks=5):
 
 
 def peek_significant(p, bar):
+    # a text or missing p or bar used to fail inside the comparison
+    # with a confusing TypeError. fail with a clear message instead.
+    if not isinstance(p, (int, float)):
+        raise ValueError("p must be a number")
+    if not isinstance(bar, (int, float)):
+        raise ValueError("bar must be a number")
+    # nan or inf would quietly answer False (nothing is ever below
+    # nan, and an inf p never clears a bar). fail clearly instead.
+    if not math.isfinite(p) or not math.isfinite(bar):
+        raise ValueError("p and bar must be finite")
+    # a p-value only makes sense between 0 and 1, and the bar is a
+    # slice of the same 0-1 budget: a bar of 0 would never flag
+    # anything, a bar above 1 would flag everything. fail clearly instead.
+    if not 0 <= p <= 1:
+        raise ValueError("p must be between 0 and 1")
+    if not 0 < bar < 1:
+        raise ValueError("bar must be between 0 and 1")
     # True only if this peek's p-value clears the stricter bar
     return p < bar
