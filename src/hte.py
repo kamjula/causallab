@@ -26,6 +26,18 @@ def fit_t_learner(pre, post, group):
 
 
 def cate(pre, control, treated):
+    # a list pre used to fail with a confusing AttributeError (no
+    # reshape), a 2-d pre was silently flattened, and a nan or inf
+    # pre failed deep inside sklearn with a long message. fail with
+    # a clear message instead.
+    pre = np.asarray(pre)
+    if pre.dtype.kind not in "iuf":
+        raise ValueError("pre must be numbers")
+    pre = pre.astype(float)
+    if pre.ndim != 1:
+        raise ValueError("pre must be one-dimensional")
+    if not np.isfinite(pre).all():
+        raise ValueError("pre must not contain nan or inf")
     # predicted lift per user: treated prediction minus control prediction
     X = pre.reshape(-1, 1)
     return treated.predict(X) - control.predict(X)
