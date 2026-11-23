@@ -20,6 +20,20 @@ def make_segments(pre, n_segments=2):
         raise ValueError("n_segments must be a whole number")
     if int(n_segments) != n_segments or n_segments < 2:
         raise ValueError("n_segments must be a whole number of 2 or more")
+    # a nan in pre used to quietly put users in the wrong segment
+    # (the quantile edges come out nan), a text pre failed inside
+    # numpy with a confusing UFuncTypeError, and an empty pre failed
+    # with a confusing IndexError. fail with a clear message instead.
+    pre = np.asarray(pre)
+    if pre.dtype.kind not in "iuf":
+        raise ValueError("pre must be numbers")
+    pre = pre.astype(float)
+    if pre.ndim != 1:
+        raise ValueError("pre must be one-dimensional")
+    if len(pre) == 0:
+        raise ValueError("pre must not be empty")
+    if not np.isfinite(pre).all():
+        raise ValueError("pre must not contain nan or inf")
     # split users by pre-period spend into equal-sized segments;
     # 0 = lowest spenders, n_segments - 1 = highest spenders
     edges = np.quantile(pre, np.linspace(0, 1, n_segments + 1))
