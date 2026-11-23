@@ -32,6 +32,25 @@ def test_make_segments_rejects_bad_counts():
             raise AssertionError(f"make_segments(pre, {bad!r}) should fail")
 
 
+def test_make_segments_rejects_bad_pre():
+    # a nan in pre used to quietly put users in the wrong segment
+    # (the quantile edges come out nan), a text pre failed inside
+    # numpy with a confusing UFuncTypeError, and an empty or 2-d pre
+    # failed with a confusing IndexError; all of them should fail
+    # with a clear error
+    for bad in [np.array([1.0, np.nan, 3.0, 4.0]),
+                np.array([1.0, np.inf, 3.0, 4.0]),
+                ["a", "b", "c", "d"],
+                np.array([]),
+                np.array([[1.0, 2.0], [3.0, 4.0]])]:
+        try:
+            make_segments(bad, 2)
+        except ValueError:
+            pass
+        else:
+            raise AssertionError(f"make_segments({bad!r}) should fail")
+
+
 def test_estimate_by_segment_rejects_bad_counts():
     # the guard lives in make_segments, but estimate_by_segment is
     # the way most callers reach it, so it should fail there too
