@@ -217,6 +217,16 @@ def test_cuped_adjust_removes_predictable_part():
     assert adj.std() < 1e-9
 
 
+def test_cuped_adjust_accepts_lists():
+    # cuped_theta takes lists fine, but adjust used to fail on them
+    # with a confusing AttributeError (list has no .mean); it should
+    # give the same answer as with arrays
+    pre = [0.0, 1.0, 2.0, 3.0]
+    post = [10.0, 12.0, 14.0, 16.0]
+    adj = adjust(pre, post)
+    assert adj.std() < 1e-9
+
+
 def test_cuped_shrinks_variance_on_correlated_data():
     # pre predicts post well, so the adjusted numbers vary less
     rng = np.random.default_rng(0)
