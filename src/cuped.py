@@ -45,4 +45,10 @@ def adjust(pre, post):
     # subtract the predictable part of post, so only the experiment
     # effect and real noise remain
     theta = cuped_theta(pre, post)
+    # cuped_theta takes lists fine, but the maths below needs arrays:
+    # a plain list used to fail with a confusing AttributeError (no
+    # .mean on a list). convert here, after cuped_theta has already
+    # checked the inputs are numbers.
+    pre = np.asarray(pre, dtype=float)
+    post = np.asarray(post, dtype=float)
     return post - theta * (pre - pre.mean())
