@@ -63,3 +63,17 @@ def test_estimate_by_segment_rejects_bad_counts():
         pass
     else:
         raise AssertionError("estimate_by_segment(n_segments=0) should fail")
+
+
+def test_estimate_by_segment_works_on_lists():
+    # make_segments takes lists, but estimate_by_segment used to fail
+    # on them with a confusing TypeError (a boolean mask cannot
+    # index a list); lists should give the same answer as arrays
+    pre = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0]
+    post = [2.0, 3.0, 4.0, 5.0, 6.0, 7.0]
+    group = [0, 1, 0, 1, 0, 1]
+    got = estimate_by_segment(pre, post, group)
+    want = estimate_by_segment(np.array(pre), np.array(post), np.array(group))
+    assert [g[0] for g in got] == [w[0] for w in want]
+    for g, w in zip(got, want):
+        assert g[1] == w[1] and g[2] == w[2] and g[3] == w[3]
