@@ -44,6 +44,14 @@ def make_segments(pre, n_segments=2):
 def estimate_by_segment(pre, post, group, n_segments=2):
     # the same lift estimate as the simulator, computed inside each
     # segment; returns (name, lift, se, p) per segment
+    # make_segments takes lists fine, but the slicing below needs
+    # arrays: a plain list used to fail with a confusing TypeError
+    # (a boolean mask cannot index a list). convert here, before
+    # the segment split, and let make_segments and estimate do
+    # their own checks on the arrays.
+    pre = np.asarray(pre)
+    post = np.asarray(post)
+    group = np.asarray(group)
     if n_segments == 2:
         names = ["light spenders", "heavy spenders"]
     else:
